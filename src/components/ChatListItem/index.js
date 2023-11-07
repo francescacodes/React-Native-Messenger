@@ -1,34 +1,30 @@
-import { Text, View, Image, StyleSheet, Pressable } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import dayjs, { Dayjs } from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
+import { Text, View, Image, StyleSheet, Pressable } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 dayjs.extend(relativeTime);
 
 const ChatListItem = ({ chat }) => {
   const navigation = useNavigation();
+
   return (
     <Pressable
-      onPress={() => navigation.navigate("Chat")}
+      onPress={() => navigation.navigate('Chat', { id: chat.id, name: chat.user.name })}
       style={styles.container}
     >
-      <Image
-        source={{
-          uri: chat.user.image,
-        }}
-        style={styles.image}
-      />
+      <Image source={{ uri: chat.user.image }} style={styles.image} />
 
       <View style={styles.content}>
         <View style={styles.row}>
           <Text style={styles.name} numberOfLines={1}>
             {chat.user.name}
           </Text>
-          <Text style={styles.time}>
-            {dayjs(chat.lastMessage.createdAt).fromNow(true)}
-          </Text>
+          <Text style={styles.subTitle}>{dayjs(chat.lastMessage.createdAt).fromNow(true)}</Text>
         </View>
-        <Text numberOfLines={2} style={styles.lastMessage}>
+
+        <Text numberOfLines={2} style={styles.subTitle}>
           {chat.lastMessage.text}
         </Text>
       </View>
@@ -38,7 +34,7 @@ const ChatListItem = ({ chat }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginHorizontal: 10,
     marginVertical: 5,
     height: 70,
@@ -51,25 +47,20 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    marginLeft: 10,
-    justifyContent: "center",
+
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'lightgray',
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
+    flexDirection: 'row',
+    marginBottom: 5,
   },
   name: {
-    fontWeight: "bold",
-    fontSize: 16,
+    flex: 1,
+    fontWeight: 'bold',
   },
-  lastMessage: {
-    fontSize: 16,
-    color: "grey",
-  },
-  time: {
-    fontSize: 14,
-    color: "grey",
+  subTitle: {
+    color: 'gray',
   },
 });
 
