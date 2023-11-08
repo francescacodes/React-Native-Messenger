@@ -1,15 +1,10 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Flatlist,
-  ImageBackground,
-} from "react-native";
+import { View, Button, StyleSheet } from "react-native";
+import { Auth } from "aws-amplify";
 
 const Settings = () => {
   return (
-    <View>
-      <Text>Settings</Text>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Button onPress={() => Auth.signOut()} title="Sign Out" />
     </View>
   );
 };
