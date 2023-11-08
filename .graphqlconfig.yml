@@ -5,6 +5,7 @@ projects:
       - src/graphql/**/*.js
     excludes:
       - ./amplify/**
+      - src/API.ts
     extensions:
       amplify:
         codeGenTarget: javascript
@@ -13,3 +14,6 @@ projects:
         region: us-east-1
         apiId: null
         maxDepth: 3
+extensions:
+  amplify:
+    version: 3
