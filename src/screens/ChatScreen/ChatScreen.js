@@ -7,11 +7,11 @@ import {
   View,
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import Message from "../components/Message";
-import InputBox from "../components/InputBox";
+import Message from "../../components/Message";
+import InputBox from "../../components/InputBox";
 
-import bubbles from "../../assets/images/bubbles.jpg";
-import messages from "../../assets/data/messages.json";
+import bubbles from "../../../assets/images/bubbles.jpg";
+import messages from "../../../assets/data/messages.json";
 
 const ChatScreen = () => {
   const route = useRoute();

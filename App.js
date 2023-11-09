@@ -22,17 +22,20 @@ function App() {
       );
 
       if (userData.data.getUser) {
-        console.log("User already exists in DB");
+        console.log("User already exists");
         return;
       }
 
       const newUser = {
         id: authUser.attributes.sub,
         name: authUser.attributes.phone_number,
+        image: "",
         status: "Hey there!",
       };
 
-      await API.graphql(graphqlOperation(createUser, { input: newUser }));
+      const newUserResponse = await API.graphql(
+        graphqlOperation(createUser, { input: newUser })
+      );
     };
 
     syncUser();
