@@ -180,7 +180,7 @@ export const getUser = /* GraphQL */ `
       id
       name
       status
-      picture
+      image
       Messages {
         items {
           id
@@ -223,7 +223,7 @@ export const listUsers = /* GraphQL */ `
         id
         name
         status
-        picture
+        image
         Messages {
           nextToken
           __typename
@@ -275,7 +275,7 @@ export const getUserChatRoom = /* GraphQL */ `
         id
         name
         status
-        picture
+        image
         Messages {
           nextToken
           __typename
@@ -316,7 +316,7 @@ export const listUserChatRooms = /* GraphQL */ `
           id
           name
           status
-          picture
+          image
           createdAt
           updatedAt
           __typename
@@ -360,7 +360,7 @@ export const userChatRoomsByChatRoomId = /* GraphQL */ `
           id
           name
           status
-          picture
+          image
           createdAt
           updatedAt
           __typename
@@ -404,7 +404,7 @@ export const userChatRoomsByUserId = /* GraphQL */ `
           id
           name
           status
-          picture
+          image
           createdAt
           updatedAt
           __typename

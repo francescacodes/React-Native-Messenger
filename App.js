@@ -33,9 +33,7 @@ function App() {
         status: "Hey there!",
       };
 
-      const newUserResponse = await API.graphql(
-        graphqlOperation(createUser, { input: newUser })
-      );
+      await API.graphql(graphqlOperation(createUser, { input: newUser }));
     };
 
     syncUser();

@@ -1,10 +1,10 @@
 import { Text, Image, StyleSheet, Pressable, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { API, graphqlOperation, Auth } from "aws-amplify";
-import { createChatRoom, createChatRoomUser } from "../../graphql/mutations";
-import React, { useEffect, useState } from "react";
+import { createChatRoom, createUserChatRoom } from "../../graphql/mutations";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { getCommonChatRoomWithUser } from "../../services/chatRoomService";
 
 dayjs.extend(relativeTime);
 
@@ -12,40 +12,44 @@ const ContactListItem = ({ user }) => {
   const navigation = useNavigation();
 
   const onPress = async () => {
-    console.warn("Pressed on user");
+    // Check if we already have a ChatRoom with user
+    const existingChatRoom = await getCommonChatRoomWithUser(user.id);
+    if (existingChatRoom) {
+      navigation.navigate("Chat", { id: existingChatRoom.id });
+      return;
+    }
 
-    // check if there is a chat room with the user
-
-    //create a new chat room
+    // Create a new Chatroom
     const newChatRoomData = await API.graphql(
       graphqlOperation(createChatRoom, { input: {} })
     );
     console.log(newChatRoomData);
     if (!newChatRoomData.data?.createChatRoom) {
-      console.log("Error creating chat room");
+      console.log("Error creating the chat error");
     }
     const newChatRoom = newChatRoomData.data?.createChatRoom;
 
-    //add the clicked user to the chat room
-
+    // Add the clicked user to the ChatRoom
     await API.graphql(
-      graphqlOperation(createChatRoomUser, {
+      graphqlOperation(createUserChatRoom, {
         input: { chatRoomID: newChatRoom.id, userID: user.id },
       })
     );
-    //add auth to chat room
+
+    // Add the auth user to the ChatRoom
     const authUser = await Auth.currentAuthenticatedUser();
     await API.graphql(
-      graphqlOperation(createChatRoomUser, {
+      graphqlOperation(createUserChatRoom, {
         input: { chatRoomID: newChatRoom.id, userID: authUser.attributes.sub },
       })
     );
-    // navigate to chat room
+
+    // navigate to the newly created ChatRoom
     navigation.navigate("Chat", { id: newChatRoom.id });
   };
 
   return (
-    <Pressable onPress={() => {}} style={styles.container}>
+    <Pressable onPress={onPress} style={styles.container}>
       <Image source={{ uri: user.image }} style={styles.image} />
 
       <View style={styles.content}>
@@ -75,17 +79,14 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginRight: 10,
   },
+  content: {
+    flex: 1,
+  },
   name: {
     fontWeight: "bold",
   },
-  content: {
-    flex: 1,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "lightgray",
-  },
   subTitle: {
     color: "gray",
-    width: "100%",
   },
 });
 

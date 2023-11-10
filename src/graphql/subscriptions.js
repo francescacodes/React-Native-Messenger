@@ -181,7 +181,7 @@ export const onCreateUser = /* GraphQL */ `
       id
       name
       status
-      picture
+      image
       Messages {
         items {
           id
@@ -219,7 +219,7 @@ export const onUpdateUser = /* GraphQL */ `
       id
       name
       status
-      picture
+      image
       Messages {
         items {
           id
@@ -257,7 +257,7 @@ export const onDeleteUser = /* GraphQL */ `
       id
       name
       status
-      picture
+      image
       Messages {
         items {
           id
@@ -325,7 +325,7 @@ export const onCreateUserChatRoom = /* GraphQL */ `
         id
         name
         status
-        picture
+        image
         Messages {
           nextToken
           __typename
@@ -380,7 +380,7 @@ export const onUpdateUserChatRoom = /* GraphQL */ `
         id
         name
         status
-        picture
+        image
         Messages {
           nextToken
           __typename
@@ -435,7 +435,7 @@ export const onDeleteUserChatRoom = /* GraphQL */ `
         id
         name
         status
-        picture
+        image
         Messages {
           nextToken
           __typename

@@ -202,7 +202,7 @@ export const createUser = /* GraphQL */ `
       id
       name
       status
-      picture
+      image
       Messages {
         items {
           id
@@ -243,7 +243,7 @@ export const updateUser = /* GraphQL */ `
       id
       name
       status
-      picture
+      image
       Messages {
         items {
           id
@@ -284,7 +284,7 @@ export const deleteUser = /* GraphQL */ `
       id
       name
       status
-      picture
+      image
       Messages {
         items {
           id
@@ -353,7 +353,7 @@ export const createUserChatRoom = /* GraphQL */ `
         id
         name
         status
-        picture
+        image
         Messages {
           nextToken
           __typename
@@ -409,7 +409,7 @@ export const updateUserChatRoom = /* GraphQL */ `
         id
         name
         status
-        picture
+        image
         Messages {
           nextToken
           __typename
@@ -465,7 +465,7 @@ export const deleteUserChatRoom = /* GraphQL */ `
         id
         name
         status
-        picture
+        image
         Messages {
           nextToken
           __typename
