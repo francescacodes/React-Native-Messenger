@@ -13,27 +13,33 @@ Amplify.configure({ ...awsconfig, Analytics: { disabled: true } });
 function App() {
   useEffect(() => {
     const syncUser = async () => {
+      //get authenticated user from Auth
       const authUser = await Auth.currentAuthenticatedUser({
         bypassCache: true,
       });
-
+      console.log(authUser);
+      //get the user from backend with the user id from Auth
       const userData = await API.graphql(
         graphqlOperation(getUser, { id: authUser.attributes.sub })
       );
-
+      console.log(userData);
+      //gets the authenticated user from the db
       if (userData.data.getUser) {
         console.log("User already exists");
         return;
       }
-
+      //creates a new user
       const newUser = {
         id: authUser.attributes.sub,
         name: authUser.attributes.phone_number,
         image: "",
         status: "Hey there!",
       };
+      console.log(newUser);
 
-      await API.graphql(graphqlOperation(createUser, { input: newUser }));
+      const newUserResponse = await API.graphql(
+        graphqlOperation(createUser, { input: newUser })
+      );
     };
 
     syncUser();

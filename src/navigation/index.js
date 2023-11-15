@@ -18,7 +18,7 @@ const Navigator = () => {
           component={MainTabNavigator}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="Chat" component={ChatScreen} />
+        <Stack.Screen name="ChatScreen" component={ChatScreen} />
         <Stack.Screen name="Contacts" component={ContactsScreen} />
       </Stack.Navigator>
     </NavigationContainer>

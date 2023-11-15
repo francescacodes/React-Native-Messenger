@@ -2,50 +2,50 @@ import { Text, Image, StyleSheet, Pressable, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { createChatRoom, createUserChatRoom } from "../../graphql/mutations";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import { getCommonChatRoomWithUser } from "../../services/chatRoomService";
 
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
 const ContactListItem = ({ user }) => {
   const navigation = useNavigation();
 
   const onPress = async () => {
-    // Check if we already have a ChatRoom with user
-    const existingChatRoom = await getCommonChatRoomWithUser(user.id);
-    if (existingChatRoom) {
-      navigation.navigate("Chat", { id: existingChatRoom.id });
-      return;
-    }
+    console.warn("onPress");
 
-    // Create a new Chatroom
+    //check if we have a chat room with the user
+
+    //create a new chat room
     const newChatRoomData = await API.graphql(
       graphqlOperation(createChatRoom, { input: {} })
     );
     console.log(newChatRoomData);
     if (!newChatRoomData.data?.createChatRoom) {
-      console.log("Error creating the chat error");
+      console.log("Failed to create a chat room");
+      return;
     }
     const newChatRoom = newChatRoomData.data?.createChatRoom;
 
-    // Add the clicked user to the ChatRoom
+    //add the clicked user to the chat room
+
     await API.graphql(
       graphqlOperation(createUserChatRoom, {
-        input: { chatRoomID: newChatRoom.id, userID: user.id },
+        input: { chatRoomId: newChatRoom.id, userId: user.id },
       })
     );
 
-    // Add the auth user to the ChatRoom
+    //add the signed in user to the chat room
+
     const authUser = await Auth.currentAuthenticatedUser();
     await API.graphql(
       graphqlOperation(createUserChatRoom, {
-        input: { chatRoomID: newChatRoom.id, userID: authUser.attributes.sub },
+        input: { chatRoomId: newChatRoom.id, userId: authUser.attributes.sub },
       })
     );
 
-    // navigate to the newly created ChatRoom
-    navigation.navigate("Chat", { id: newChatRoom.id });
+    //navigate to the chat room
+    navigation.navigate("ChatScreen", { id: newChatRoom.id });
   };
 
   return (
