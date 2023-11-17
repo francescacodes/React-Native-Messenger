@@ -12,8 +12,6 @@ const ContactListItem = ({ user }) => {
   const navigation = useNavigation();
 
   const onPress = async () => {
-    console.warn("onPress");
-
     //check if we have a chat room with the user
 
     //create a new chat room

@@ -11,17 +11,17 @@ const ChatsScreen = () => {
       const authUser = await Auth.currentAuthenticatedUser();
 
       const response = await API.graphql(
-        graphqlOperation(listChatRooms, { id: Auth.user.attributes.sub })
+        graphqlOperation(listChatRooms, { id: authUser.attributes.sub })
       );
 
-      setChatRooms(response.data.getUser.ChatRoom.items);
+      setChatRooms(response.data.getUser.ChatRooms.items);
     };
     fetchChatRooms();
   }, []);
   return (
     <FlatList
       data={chatRooms}
-      renderItem={({ item }) => <ChatListItem chat={item} />}
+      renderItem={({ item }) => <ChatListItem chat={item.chatRoom} />}
       style={{ backgroundColor: "white" }}
     />
   );

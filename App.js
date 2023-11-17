@@ -32,7 +32,7 @@ function App() {
       const newUser = {
         id: authUser.attributes.sub,
         name: authUser.attributes.phone_number,
-        image: "",
+        image: "Add a picture",
         status: "Hey there!",
       };
       console.log(newUser);
