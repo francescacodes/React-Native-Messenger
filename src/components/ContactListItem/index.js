@@ -2,7 +2,8 @@ import { Text, Image, StyleSheet, Pressable, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { createChatRoom, createUserChatRoom } from "../../graphql/mutations";
-import { getCommonChatRoomWithUser } from "../../services/chatRoomService";
+import { createOrGetChatRoomWithUser } from "../../services/chatService";
+import { getChatRoom } from "../../graphql/queries";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -12,40 +13,51 @@ const ContactListItem = ({ user }) => {
   const navigation = useNavigation();
 
   const onPress = async () => {
-    console.warn("onPress");
+    try {
+      const authUser = await Auth.currentAuthenticatedUser();
 
-    //check if we have a chat room with the user
+      // Check if there is an existing chat room with the clicked user
+      const existingChatRoom = await createOrGetChatRoomWithUser(user.id);
 
-    //create a new chat room
-    const newChatRoomData = await API.graphql(
-      graphqlOperation(createChatRoom, { input: {} })
-    );
-    console.log(newChatRoomData);
-    if (!newChatRoomData.data?.createChatRoom) {
-      console.log("Failed to create a chat room");
-      return;
+      if (existingChatRoom) {
+        navigation.navigate("ChatScreen", { id: existingChatRoom.chatRoom.id });
+        return;
+      }
+
+      // If no existing chat room, create a new one
+      const newChatRoomData = await API.graphql(
+        graphqlOperation(createChatRoom, { input: {} })
+      );
+
+      if (!newChatRoomData.data?.createChatRoom) {
+        console.log("Failed to create a chat room");
+        return;
+      }
+
+      const newChatRoom = newChatRoomData.data?.createChatRoom;
+
+      // Add the clicked user and the current user to the new chat room
+      await Promise.all([
+        API.graphql(
+          graphqlOperation(createUserChatRoom, {
+            input: { chatRoomId: newChatRoom.id, userId: user.id },
+          })
+        ),
+        API.graphql(
+          graphqlOperation(createUserChatRoom, {
+            input: {
+              chatRoomId: newChatRoom.id,
+              userId: authUser.attributes.sub,
+            },
+          })
+        ),
+      ]);
+
+      // Navigate to the newly created ChatRoom
+      navigation.navigate("ChatScreen", { id: newChatRoom.id });
+    } catch (error) {
+      console.error("Error:", error);
     }
-    const newChatRoom = newChatRoomData.data?.createChatRoom;
-
-    //add the clicked user to the chat room
-
-    await API.graphql(
-      graphqlOperation(createUserChatRoom, {
-        input: { chatRoomId: newChatRoom.id, userId: user.id },
-      })
-    );
-
-    //add the signed in user to the chat room
-
-    const authUser = await Auth.currentAuthenticatedUser();
-    await API.graphql(
-      graphqlOperation(createUserChatRoom, {
-        input: { chatRoomId: newChatRoom.id, userId: authUser.attributes.sub },
-      })
-    );
-
-    //navigate to the chat room
-    navigation.navigate("ChatScreen", { id: newChatRoom.id });
   };
 
   return (

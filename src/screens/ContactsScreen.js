@@ -12,14 +12,27 @@ import {
 
 const ContactsScreen = () => {
   const [users, setUsers] = useState([]);
-
   const navigation = useNavigation();
 
   useEffect(() => {
-    API.graphql(graphqlOperation(listUsers)).then((result) => {
-      setUsers(result.data?.listUsers?.items);
-      console.log(result);
-    });
+    const fetchUsers = async () => {
+      try {
+        const authUser = await Auth.currentAuthenticatedUser();
+        const result = await API.graphql(graphqlOperation(listUsers));
+        const allUsers = result.data?.listUsers?.items || [];
+
+        // Filter out the current authenticated user
+        const otherUsers = allUsers.filter(
+          (user) => user.id !== authUser.attributes.sub
+        );
+
+        setUsers(otherUsers);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
   const createAChatRoomWithTheUser = async (user) => {
