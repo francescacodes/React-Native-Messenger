@@ -9,6 +9,7 @@ import {
   createChatRoom,
   createUserChatRoom,
 } from "../../src/graphql/mutations";
+import { createOrGetChatRoomWithUser } from "../services/chatService";
 
 const ContactsScreen = () => {
   const [users, setUsers] = useState([]);
@@ -37,7 +38,7 @@ const ContactsScreen = () => {
 
   const createAChatRoomWithTheUser = async (user) => {
     // Check if we already have a ChatRoom with user
-    const existingChatRoom = await getCommonChatRoomWithUser(user.id);
+    const existingChatRoom = await createOrGetChatRoomWithUser(user.id);
     if (existingChatRoom) {
       navigation.navigate("Chat", { id: existingChatRoom.chatRoom.id });
       return;
